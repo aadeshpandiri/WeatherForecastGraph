@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        weather
+
+    </title>
+    <style>
+        body{
+            font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 1.3em;
+    color: #fff;
+    text-shadow: .1em .1em 0 rgba(0,0,0,0.3);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(to right top, #99bbcb, #a5c7d7, #b1d4e2, #bde0ee, #c9edfa);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"
+        integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw=="
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <center>
+        <p>
+        <h1>Weather data</h1>
+        </p>
+        <br>
+        <form>
+            <label for="city">Enter your City :</label>
+            <input type="text" id="city" name="city">
+            <button type="button" onclick="getInputValue();">Submit</button>
+        </form>
+        <br>
+
+        <div id="weather">
+            <div id="description"></div>
+            <h1 id="temp"></h1>
+            <div id="location"></div>
+        </div>
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </center>
+    
+    
+    <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
+
+    <script>
+        function getInputValue() {
+
+            var citynamefetch = document.getElementById("city").value;
+
+
+            getgraph(citynamefetch);
+        }
+        function getgraph(city) {
+            let data = []
+            let label = []
+            london = fetch("http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=3dd0107503cefb19bbf5bc1b2c2b6a1a&units=metric")
+            london.then((result) => {
+                result.json()
+                    .then((res) => {
+                        // console.log(res.list[0].main.temp) 
+                        let l1 = res.list
+                        for (let x = 0; x < l1.length; x += 8) {
+
+                            console.log(l1[x].main.temp)
+                            console.log(l1[x].dt_txt)
+                            label.push(l1[x].dt_txt.substring(0, 10))
+                            data.push(l1[x].main.temp)
+                        }
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: label,
+                                datasets: [{
+                                    label: 'dates',
+                                    data: data,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            }
+                        });
+                    })
+            })
+            console.log(data)
+
+
+        }
+    </script>
+</body>
+
+</html>
